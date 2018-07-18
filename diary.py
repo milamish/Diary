@@ -28,10 +28,16 @@ def tokens(k):
 
 
         except:
-            return jsonify({'message' : 'invalid login'}), 403
+            return jsonify({'message' : 'invalid access'}), 403
 
         return k(*args, **kwargs)
     return decorated
+
+@app.route('/api/v1/home',methods=['POST','GET'])
+def home():
+    return jsonify({"message":"welcome to my diary"})
+
+    
 @app.route('/api/v1/login', methods=['POST','GET'])
 def login():
     username=request.get_json()["username"]
@@ -100,7 +106,7 @@ def delete_entry():
 @app.route("/api/v1/update_entry", methods=['PUT'])
 @tokens
 def update_entry():
-    update=['update']
+    update=["update"]
     achievements[0]=[update]
     achievements.append(update)
     return jsonify({"message":"updated"})
