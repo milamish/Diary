@@ -11,39 +11,35 @@ class Test_Diary(unittest.TestCase):
             response=m.get('/api/v1/home',)
             self.assertEqual(response.status_code,200)
 
-    def test_viewHobbies(self):
+    def test_entries(self):
         with app.test_client() as m:
-            response=m.get('/api/v1/view_hobbies',)
-            self.assertEqual(response.status_code, 403)
+            response=m.get('/api/v1/entry',)
+            self.assertEqual(response.status_code,500)
 
-    def test_viewAchievement(self):
+    def test_fetchEntries(self):
         with app.test_client() as m:
-            response=m.get('api/v1/view_achievement',)
-            self.assertEqual(response.status_code, 403)
+            response=m.get('/api/v1/fetch_entries',)
+            self.assertEqual(response.status_code,200)
 
-    def test_allUsers(self):
+    def test_updateEntry(self):
         with app.test_client() as m:
-            response=m.get('api/v1/all_users',)
-            self.assertEqual(response.status_code,403)
+            response=m.get('/api/v1/update_entry',)
+            self.assertEqual(response.status_code,404)
 
-    def test_allEntries(self):
+    def test_deleteEntry(self):
         with app.test_client() as m:
-            response=m.get('api/v1/all_entries',)
-            self.assertEqual(response.status_code,403)
+            response= m.get('/api/v1/delete_entry',)
+            self.assertEqual(response.status_code,404)
 
     def test_register(self):
         with app.test_client() as m:
-            response= m.get('api/v1/register',)
+            response = m.get('api/v1/register',)
             self.assertEqual(response.status_code,500)
 
     def test_login(self):
         with app.test_client() as m:
-            response=m.get('api/v1/register',)
+            response=m.get('api/v1/login')
             self.assertEqual(response.status_code,500)
-
-
-
-        
 
 if __name__ =='__main__':
     unittest.main()
