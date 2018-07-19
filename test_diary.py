@@ -26,6 +26,21 @@ class Test_Diary(unittest.TestCase):
             response=m.get('api/v1/all_users',)
             self.assertEqual(response.status_code,403)
 
+    def test_allEntries(self):
+        with app.test_client() as m:
+            response=m.get('api/v1/all_entries',)
+            self.assertEqual(response.status_code,403)
+
+    def test_register(self):
+        with app.test_client() as m:
+            response= m.get('api/v1/register',)
+            self.assertEqual(response.status_code,500)
+
+    def test_login(self):
+        with app.test_client() as m:
+            response=m.get('api/v1/register',)
+            self.assertEqual(response.status_code,500)
+
 
 
         
