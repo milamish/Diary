@@ -55,6 +55,10 @@ def delete_entry(ID):
     del entries[ID-1]
     return jsonify({ 'message': ' entry deleted'})
 
+@app.route('/api/v1/individual_entry/<int:ID>',methods=['GET'])
+def individual_entry(ID):
+    return jsonify(entries[ID-1])
+
     
 
 if __name__ =="__main__":
