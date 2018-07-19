@@ -97,25 +97,32 @@ def all_entries():
 def all_users():
     return jsonify(users) 
 
-@app.route('/api/v1/delete_entry<int:id>',methods=['DELETE'])
+@app.route('/api/v1/delete_achievement/<int:ID>',methods=['DELETE'])
 @tokens
-def delete_entry():
-    
+def delete_achievement(ID):
+    del achievements[ID-1]
     return jsonify({ 'message': 'deleted'})
 
-@app.route("/api/v1/update_entry", methods=['PUT'])
+@app.route("/api/v1/update_achievement/<int:ID>", methods=['PUT'])
 @tokens
-def update_entry():
-    update=["update"]
-    achievements[0]=[update]
-    achievements.append(update)
+def update_entry(ID):
+    update=request.get_json()['update']
+    achievements[ID-1]=update
     return jsonify({"message":"updated"})
 
-#@app.route("/api/v1/individual_entries",methods=['POST','GET'])
-#@tokens
-#def individual_entries():
- #   return jsonify(username)
-  #  user_keys
+@app.route("/api/v1/update_hobby/<int:ID>", methods=['PUT'])
+@tokens
+def update_hobby(ID):
+    update_hobby=request.get_json()['update_hobby']
+    hobies[ID-1]=update_hobby
+    return jsonify({"message":"hobby updated"})
+
+@app.route('/api/v1/delete_hobby/<int:ID>',methods=['DELETE'])
+@tokens
+def delete_hobby(ID):
+    del hobies[ID-1]
+    return jsonify({ 'message': ' hobby deleted'})
+
     
 
 if __name__ =="__main__":
