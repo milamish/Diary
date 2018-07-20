@@ -16,8 +16,7 @@ class Test_Diary(unittest.TestCase):
 
     def test_fetchEntries(self):
         with app.test_client() as m:
-            response=m.get('/api/v1/fetch_entries',)
-            self.assertEqual(response.status_code,200)
+            self.assertEqual(m.get('/api/v1/fetch_entries',).status_code,200)
 
     def test_updateEntry(self):
         with app.test_client() as m:
