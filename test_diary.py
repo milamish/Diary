@@ -29,13 +29,13 @@ class Test_Diary(unittest.TestCase):
 
     def test_register(self):
         with app.test_client() as m:
-            response = m.get('api/v1/register',)
+            response = m.get('api/v1/register')
+            response2 = m.post('api/v1/register',json={})
             self.assertEqual(response.status_code,500)
+            self.assertEqual(response2.status_code,500)
 
     def test_login(self):
-        with app.test_client() as m:
-            response=m.get('api/v1/login')
-            self.assertEqual(response.status_code,500)
+        self.assertEqual(app.test_client().get('api/v1/login').status_code,500)
 
 if __name__ =='__main__':
     unittest.main()
