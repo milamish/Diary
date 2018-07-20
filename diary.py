@@ -44,7 +44,7 @@ def fetch_entries():
     return jsonify(entries)
 
 
-@app.route("/api/v1/update_entry/<int:ID>", methods=['PUT'])
+@app.route('/api/v1/update_entry/<int:ID>', methods=['PUT'])
 def update_entry(ID):
     update_entry=request.get_json()['update_entry']
     entries[ID-1]=update_entry
