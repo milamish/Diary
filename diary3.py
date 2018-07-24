@@ -3,7 +3,7 @@ from functools import wraps
 import datetime
 import jwt
 # db_diary
-from db_diary import *
+from models import *
 import psycopg2
 from passlib.hash import pbkdf2_sha256 as sha256
 
