@@ -2,13 +2,22 @@ from flask import *
 from functools import wraps
 import datetime
 import jwt
-import db_diary
-#from db_diary import *
+# db_diary
+from db_diary import *
 import psycopg2
+from passlib.hash import pbkdf2_sha256 as sha256
 
 
 app=Flask(__name__)
 app.config ['SECRET_KEY']='mish'
+'''
+class passWord():
+    @staticmethod
+    def generate_hash(password):
+        return sha256.hash(password)
+    @staticmethod
+    def verify_hash(password, hash):
+        return sha256.verify(password, hash)'''
 
 def tokens(k):
     @wraps(k)
@@ -36,9 +45,12 @@ def home():
 def  register():
 	name= request.get_json()['name']
 	email_adress= request.get_json()['email_adress']
-	password= request.get_json()['password']
-	repeat_password= request.get_json()['repeat_password']
 	username=request.get_json()['username']
+	password=request.get_json()['password']
+	repeat_password=request.get_json()['repeat_password']
+	'''password= passWord.generate_hash(['password'])
+	repeat_password= passWord.generate_hash(['repeat_password'])'''
+	
 	if password!=repeat_password:
 		return jsonify({"message":"password do not match"})
 	try:
@@ -96,6 +108,7 @@ def add_entry():
 	try:
 		
 		with connection.cursor() as cursor:
+			#sql_entry= "INSERT INTO entries(hobby,milestone,achievement,todo,user_id) VALUES('"+hobby+"', '"+milestone+"', '"+achievement+"', '"+todo+"', '"+str(user_id)+"');"
 			sql_entry= "INSERT INTO entries(hobby,milestone,achievement,todo,user_id) VALUES(%s,%s,%s,%s,%s);"
 			try:
 				cursor.execute(sql_entry,(hobby,milestone,achievement,todo,user_id))
@@ -136,13 +149,13 @@ def entries_for_single_user(user_id):
 	connection=psycopg2.connect(host='localhost',user='postgres',password='milamish8',dbname='diary')
 	try:
 		with connection.cursor() as cursor:
-			sql_one="SELECT * FROM entries WHERE entries.user_id="+str(user_id)+";"
+			sql_one="SELECT * FROM entries WHERE entries.user_id='"+str(user_id)+"';"
 			try:
 				cursor.execute(sql_one)
-				result=cursor.fetchone()
+				result=cursor.fetchall()
 				return jsonify(result)
 				for row in result:
-					row=cursor.fetchall()
+					row=cusor,fetchall()
 			except:
 				return jsonify({"message":"not found"})
 		connection.commit()
@@ -150,7 +163,7 @@ def entries_for_single_user(user_id):
 		connection.close()
 
 @app.route('/api/v2/view_all_entries',methods=['POST','GET'])
-@tokens
+#@tokens
 def view_all_entries():
 		connection=psycopg2.connect(host='localhost',user='postgres',password='milamish8',dbname='diary')
 		try:
@@ -170,7 +183,7 @@ def view_all_entries():
 
 
 @app.route('/api/v2/modify_an_entry/<int:entry_id>',methods=['PUT','POST'])
-@tokens
+#@tokens
 def modify_an_entry(entry_id):
 	connection=psycopg2.connect(host='localhost',user='postgres',password='milamish8',dbname='diary')
 	hobby=request.get_json()['hobby']
@@ -179,7 +192,7 @@ def modify_an_entry(entry_id):
 	todo=request.get_json()['todo']
 	try:
 		with connection.cursor() as cursor:
-			sql_update="update entries SET hobby='"+hobby+"',milestone='"+milestone+"',achievement = '"+achievement+"',todo = '"+todo+"' where entry_id="+str(entry_id)+";"
+			sql_update="update entries SET hobby='"+hobby+"',milestone='"+milestone+"',achievement = '"+achievement+"',todo = '"+todo+"' where entry_id='"+str(entry_id)+"';"
 			try:
 				cursor.execute(sql_update)
 				connection.commit()
@@ -190,14 +203,14 @@ def modify_an_entry(entry_id):
 		connection.close()
 
 @app.route('/api/v2/delete_entry/<int:entry_id>',methods=['DELETE'])
-@tokens
+#@tokens
 def delete_entry(entry_id):
 	connection=psycopg2.connect(host='localhost',user='postgres',password='milamish8',dbname='diary')
 	try:
 		with connection.cursor() as cursor:
-			sql_del="DELETE FROM entries WHERE entries.entry_id= "+str(entry_id)+" and entries.entry_id="+str((entry_id))+";"
+			sql_del="DELETE FROM entries WHERE entries.entry_id= "+str(entry_id)+" and entries.entry_id='"+str((entry_id))+"';"
 			try:
-				cursor.execute("SELECT * FROM entries WHERE entries.entry_id = "+str(entry_id)+" and entries.entry_id="+str((entry_id))+"")
+				cursor.execute("SELECT * FROM entries WHERE entries.entry_id = "+str(entry_id)+" and entries.entry_id='"+str((entry_id))+"'")
 				result=cursor.fetchone()
 				if result is None:
 					return jsonify({"message":"entry does not exist"})
@@ -218,4 +231,5 @@ def logout():
 
 
 if __name__=="__main__":
-    app.run(debug=True)
+	table()
+	app.run(debug=True)
