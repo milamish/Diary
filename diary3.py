@@ -106,10 +106,8 @@ def add_entry():
 	user_id=data['user_id']
 	connection = psycopg2.connect(host ='localhost',user='postgres',password='milamish8',dbname='diary')
 	try:
-		
 		with connection.cursor() as cursor:
-			#sql_entry= "INSERT INTO entries(hobby,milestone,achievement,todo,user_id) VALUES('"+hobby+"', '"+milestone+"', '"+achievement+"', '"+todo+"', '"+str(user_id)+"');"
-			sql_entry= "INSERT INTO entries(hobby,milestone,achievement,todo,user_id) VALUES(%s,%s,%s,%s,%s);"
+			sql_entry="INSERT INTO entries(hobby,milestone,achievement,todo,user_id) VALUES(%s,%s,%s,%s,%s);"
 			try:
 				cursor.execute(sql_entry,(hobby,milestone,achievement,todo,user_id))
 			except:
@@ -146,6 +144,8 @@ def view_a_single_entry(entry_id):
 @app.route('/api/v2/entries_from_individual_user/<int:user_id>',methods=['GET'])
 @tokens
 def entries_for_single_user(user_id):
+	data = jwt.decode(request.args.get('token'), app.config['SECRET_KEY'])
+	user_id=data['user_id']
 	connection=psycopg2.connect(host='localhost',user='postgres',password='milamish8',dbname='diary')
 	try:
 		with connection.cursor() as cursor:
@@ -163,7 +163,7 @@ def entries_for_single_user(user_id):
 		connection.close()
 
 @app.route('/api/v2/view_all_entries',methods=['POST','GET'])
-#@tokens
+@tokens
 def view_all_entries():
 		connection=psycopg2.connect(host='localhost',user='postgres',password='milamish8',dbname='diary')
 		try:
@@ -183,22 +183,29 @@ def view_all_entries():
 
 
 @app.route('/api/v2/modify_an_entry/<int:entry_id>',methods=['PUT','POST'])
-#@tokens
+@tokens
 def modify_an_entry(entry_id):
+	data = jwt.decode(request.args.get('token'), app.config['SECRET_KEY'])
+	user_id=data['user_id']
 	connection=psycopg2.connect(host='localhost',user='postgres',password='milamish8',dbname='diary')
 	hobby=request.get_json()['hobby']
 	milestone=request.get_json()['milestone']
 	achievement=request.get_json()['achievement']
 	todo=request.get_json()['todo']
+	get_date=str(datetime.datetime.today())
+
 	try:
 		with connection.cursor() as cursor:
-			sql_update="update entries SET hobby='"+hobby+"',milestone='"+milestone+"',achievement = '"+achievement+"',todo = '"+todo+"' where entry_id='"+str(entry_id)+"';"
-			try:
-				cursor.execute(sql_update)
-				connection.commit()
-				return jsonify({"message":"succesfully modified"})
-			except:
-				return jsonify({"message":"unable to update"})
+			cursor.execute("SELECT * FROM entries WHERE entries.entry_id='"+str(entry_id)+"' and entries.user_id='"+str(user_id)+"'")
+			result=cursor.fetchone()
+			if result is not None:
+				sql_update="update entries SET hobby='"+hobby+"',milestone='"+milestone+"',achievement = '"+achievement+"',todo = '"+todo+"' where entry_id='"+str(entry_id)+"';"
+				try:
+					cursor.execute(sql_update)
+					connection.commit()
+					return jsonify({"message":"succesfully modified"})
+				except:
+					return jsonify({"message":"unable to update"})
 	finally:
 		connection.close()
 

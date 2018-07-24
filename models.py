@@ -15,5 +15,6 @@ def table():
 			milestone VARCHAR(100) NOT NULL,\
 			achievement VARCHAR(100) NOT NULL,\
 			todo VARCHAR(100) NOT NULL,\
-			entry_date timestamp DEFAULT CURRENT_TIMESTAMP);")
+			entry_date timestamp DEFAULT CURRENT_TIMESTAMP,\
+			user_id INT);")
 	connection.commit()
