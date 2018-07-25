@@ -5,6 +5,7 @@ import jwt
 import psycopg2
 from __init__ import *
 
+
 from models import *
 
 entries = Blueprint('entries', __name__)
@@ -77,22 +78,24 @@ class Entries():
 		finally:
 			connection.close()
 
-	@entries.route('/api/v2/entries_from_individual_user/<int:user_id>',methods=['GET'])
+	@entries.route('/api/v2/entries_from_individual_user/',methods=['GET'])
 	@tokens
-	def entries_for_single_user(user_id):
+	def entries_for_single_user():
 		data = jwt.decode(request.args.get('token'), app.config['SECRET_KEY'])
 		user_id=data['user_id']
 		connection=psycopg2.connect(host='localhost',user='postgres',password='milamish8',dbname='diary')
-		with connection.cursor() as cursor:
-			sql_one="SELECT * FROM entries WHERE entries.user_id='"+str(user_id)+"';"
-			cursor.execute(sql_one)
-			result=cursor.fetchall()
-			return jsonify(result)
-			for row in result:
-				row=cusor,fetchall()
-				return jsonify({"message":"not found"})
-				connection.commit()
-				connection.close()
+		try:
+			with connection.cursor() as cursor:
+				sql_one="SELECT * FROM entries WHERE user_id ='"+str(user_id)+"';"
+				try:
+					cursor.execute(sql_one)
+					result=cursor.fetchall()
+					return jsonify(result)
+				except:
+					return jsonify({"message":"not found"})
+			connection.commit()
+		finally:
+			connection.close()
 
 	@entries.route('/api/v2/view_all_entries',methods=['POST','GET'])
 	@tokens
