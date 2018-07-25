@@ -3,7 +3,7 @@ from functools import wraps
 import datetime
 import jwt
 import psycopg2
-
+from __init__ import *
 
 from models import *
 
@@ -83,20 +83,16 @@ class Entries():
 		data = jwt.decode(request.args.get('token'), app.config['SECRET_KEY'])
 		user_id=data['user_id']
 		connection=psycopg2.connect(host='localhost',user='postgres',password='milamish8',dbname='diary')
-		try:
-			with connection.cursor() as cursor:
-				sql_one="SELECT * FROM entries WHERE entries.user_id='"+str(user_id)+"';"
-				try:
-					cursor.execute(sql_one)
-					result=cursor.fetchall()
-					return jsonify(result)
-					for row in result:
-						row=cusor,fetchall()
-				except:
-					return jsonify({"message":"not found"})
-			connection.commit()
-		finally:
-			connection.close()
+		with connection.cursor() as cursor:
+			sql_one="SELECT * FROM entries WHERE entries.user_id='"+str(user_id)+"';"
+			cursor.execute(sql_one)
+			result=cursor.fetchall()
+			return jsonify(result)
+			for row in result:
+				row=cusor,fetchall()
+				return jsonify({"message":"not found"})
+				connection.commit()
+				connection.close()
 
 	@entries.route('/api/v2/view_all_entries',methods=['POST','GET'])
 	@tokens
