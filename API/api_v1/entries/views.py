@@ -150,10 +150,11 @@ class Entries():
 						return jsonify({"message":"entry does not exist"}), 404
 					else:
 						cursor.execute(sql_del)
-						return jsonify({"message": "entry succesfully deleted"})
+						
 				except:
 					return jsonify({"message": "unable to delete entry"}), 500
 			connection.commit()
 		finally:
 			connection.close()
+		return jsonify({"message": "entry succesfully deleted"})
 		

@@ -2,6 +2,8 @@ from flask import Flask, jsonify, request, Blueprint
 import psycopg2
 import jwt
 import datetime
+
+from models import table
 from __init__ import *
 
 users = Blueprint('users', __name__)
@@ -43,12 +45,13 @@ class Users():
 						return jsonify({"message":"username taken"}), 409
 					else:
 						cursor.execute(sql)
-						return jsonify({"name":name,"email_adress":email_adress,"username":username})
+						
 				except:
 					return jsonify({"message":"unable to register!"}), 500
 			connection.commit()
 		finally:
 			connection.close()
+		return jsonify({"name":name,"email_adress":email_adress,"username":username})
 		
 
 	@users.route('/api/v2/login',methods=['POST','GET'])
