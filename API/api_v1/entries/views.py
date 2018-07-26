@@ -12,7 +12,7 @@ def tokens(k):
     def decorators(*args, **kwargs):
         token = request.args.get('token')
         if not token:
-            return jsonify({'message' : 'Token is missing'})
+            return jsonify({'message' : 'Token is required for access'})
         try:
             data = jwt.decode(token, app.config['SECRET_KEY'])
         except:
@@ -37,11 +37,11 @@ class Entries():
 				try:
 					cursor.execute(sql_entry,(hobby,milestone,achievement,todo,user_id))
 				except:
-					return jsonify({"message":"oops!"})
+					return jsonify({"message":"unable to add entry"}), 500
 			connection.commit()
 		finally:
 			connection.close()
-		return jsonify({"hobby":hobby,"milestone":milestone,"achievement":achievement,"todo":todo,"user_id":user_id})
+		return jsonify({"hobby":hobby,"milestone":milestone,"achievement":achievement,"todo":todo,"user_id":user_id}), 200
 	
 
 	@entries.route('/api/v2/view_a_single_entry/<int:entry_id>',methods=['POST','GET'])
@@ -58,12 +58,12 @@ class Entries():
 				try:
 					cursor.execute(sql_view)
 					result=cursor.fetchone()
-					return jsonify(result)
-					for row in result:
-						row=cursor.fetchall()
-						return jsonify(str(row[0]) + "\n\n" + "\t\t" + row[1] +"\n\n" + row[2] + "\n\n" + row[3])
+					if result is None:
+						return jsonify({"message":"entry_id does not exist"}), 404
+					else:
+						return jsonify(result)
 				except:
-					return jsonify({"message": "unable to fetch entry"})
+					return jsonify({"message": "unable to fetch entry"}), 500
 					
 			connection.commit()
 		finally:
