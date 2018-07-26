@@ -30,9 +30,9 @@ run the code
 
 open postman to test on the functionality of the endpoints
 ```
-home '/api/v1/home'
-registration '/api/v1/register'
-login '/api/v1/login'
+home '/api/v2/home'
+registration '/api/v2/register'
+login '/api/v2/login'
 post entry '/api/v2/add_entry'
 fetch entry for a single user '/api/v2/entries_from_individual_user'
 fetch all entries '/api/v2/view_all_entries'

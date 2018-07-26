@@ -34,6 +34,8 @@ class Test_Diary3(unittest.TestCase):
 		response=(m.get('/api/v2/view_all_entries,').status_code,403)
 		response2=(m.get('/api/v2/view_all_entries,').status_code,200)
 
+	
+
 
 
 if __name__ =='__main__':
