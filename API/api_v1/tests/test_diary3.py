@@ -34,7 +34,9 @@ class Test_Diary3(unittest.TestCase):
 		response=(m.get('/api/v2/view_all_entries,').status_code,403)
 		response2=(m.get('/api/v2/view_all_entries,').status_code,200)
 
-	
+	def test_entries_from_individual_user(self):
+		m=app.test_client()
+		response=(m.get('/api/v2/entries_from_individual_user,').status_code,403)
 
 
 
