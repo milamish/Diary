@@ -1,2 +1,47 @@
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/c26c9b378e37231fc690)
+[![Build Status](https://travis-ci.org/milamish/Diary.svg?branch=challenge2)](https://travis-ci.org/milamish/Diary)
+[![Python 3.6](https://img.shields.io/badge/python-3.6-blue.svg)](https://www.python.org/downloads/release/python-360/)
+[![Maintainability](https://api.codeclimate.com/v1/badges/9be8a79596c8225ef1b1/maintainability)](https://codeclimate.com/github/milamish/Diary/maintainability)
+[![Coverage Status](https://coveralls.io/repos/github/milamish/Diary/badge.svg?branch=master)](https://coveralls.io/github/milamish/Diary?branch=challenge2)
 # Diary
 my diary app
+
+install virtual environment
+```
+py -3 -m venv venv (for windows)
+```
+activate virtual environment
+```
+venv\Scripts\activate
+```
+install flask
+```
+pip install flask
+```
+install blueprint
+```
+pip install Blueprint
+```
+install requirements.txt
+```
+pip freeze > requirements.txt
+```
+run the code
+
+open postman to test on the functionality of the endpoints
+```
+home '/api/v1/home'
+registration '/api/v1/register'
+login '/api/v1/login'
+post entry '/api/v2/add_entry'
+fetch entry for a single user '/api/v2/entries_from_individual_user'
+fetch all entries '/api/v2/view_all_entries'
+update entry '/api/v2/modify_an_entry/<int:entry_id>'
+delete entry '/api/v2/delete_entry/<int:entry_id>'
+view a single entry '/view_a_single_entry/<int:entry_id'
+logout '/api/v2/logout'
+```
+
+copy the url then post it on postman
+
+check on endpoint functionality by typing the required routes on postman and the methods as well

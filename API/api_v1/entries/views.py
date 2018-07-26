@@ -69,7 +69,7 @@ class Entries():
 		finally:
 			connection.close()
 
-	@entries.route('/api/v2/entries_from_individual_user/',methods=['GET'])
+	@entries.route('/api/v2/entries_from_individual_user',methods=['GET'])
 	@tokens
 	def entries_for_single_user():
 		data = jwt.decode(request.args.get('token'), app.config['SECRET_KEY'])
