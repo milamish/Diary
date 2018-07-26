@@ -5,30 +5,21 @@ import jwt
 import psycopg2
 from __init__ import *
 
-
-from models import *
-
 entries = Blueprint('entries', __name__)
-
-
+'''args allows one to pass variable number of arguments while kwargs allows one to pass key arguments'''
 def tokens(k):
     @wraps(k)
-    def decorators(*tok, **toks):
+    def decorators(*args, **kwargs):
         token = request.args.get('token')
-
         if not token:
             return jsonify({'message' : 'Token is missing'})
-
         try:
             data = jwt.decode(token, app.config['SECRET_KEY'])
-
-
         except:
             return jsonify({'message' : 'Token is invalid'})
-
-        return k(*tok, **toks)
+        return k(*args, **kwargs)
     return decorators
-
+'''this class has functions which allows a user to make enties i.e, add, delete , modify and view'''
 class Entries():
 	@entries.route('/api/v2/add_entry',methods=['POST','GET'])
 	@tokens

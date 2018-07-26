@@ -10,34 +10,27 @@ connection = psycopg2.connect(host='localhost',user='postgres',password='milamis
 
 def tokens(k):
     @wraps(k)
-    def decorators(*tok, **toks):
+    def decorators(*args, **kwargs):
         token = request.args.get('token')
-
         if not token:
             return jsonify({'message' : 'Token is missing'})
-
         try:
             data = jwt.decode(token, app.config['SECRET_KEY'])
-
-
         except:
             return jsonify({'message' : 'Token is invalid'})
-
-        return k(*tok, **toks)
+        return k(*args, **kwargs)
     return decorators
 
-
-class Register():
-	@app.route('/api/v2/register',methods=['POST','GET'])
+'''this class has functions which allows users to register and login after registration, a registered user has a token generated for them'''
+class Users():
+	@users.route('/api/v2/register',methods=['POST','GET'])
 	def  register():
 		name= request.get_json()['name']
 		email_adress= request.get_json()['email_adress']
 		username=request.get_json()['username']
 		password=request.get_json()['password']
 		repeat_password=request.get_json()['repeat_password']
-		'''password= passWord.generate_hash(['password'])
-		repeat_password= passWord.generate_hash(['repeat_password'])'''
-		
+			
 		if password!=repeat_password:
 			return jsonify({"message":"password do not match"})
 		try:
@@ -50,8 +43,6 @@ class Register():
 						return jsonify({"message":"username taken"})
 					else:
 						cursor.execute(sql)
-
-
 				except:
 					return jsonify({"message":"oops!"})
 			connection.commit()
@@ -59,7 +50,6 @@ class Register():
 			connection.close()
 		return jsonify({"message":"registered"})
 
-class Login():
 	@users.route('/api/v2/login',methods=['POST','GET'])
 	def login():
 		username=request.get_json()['username']
@@ -81,4 +71,9 @@ class Login():
 
 @users.route('/api/v2/logout',methods=['POST','GET'])
 def logout():
-    return jsonify({"message":"you have been logged out"})
+	connection= psycopg2.connect(host='localhost', user='postgress', password='milamish', dbname='diary')
+	with connection.cursor() as cursor:
+		sql_log="SELECT * FROM  users WHERE Username LIKE '"+username+"' and Password LIKE '"+password+"'"
+		cursor.execute(sql_log)
+		result = cursor.fetchone()
+		return jsonify({"message":"you have been logged out"})
