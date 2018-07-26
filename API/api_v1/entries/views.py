@@ -83,7 +83,7 @@ class Entries():
 					result=cursor.fetchall()
 					return jsonify(result)
 				except:
-					return jsonify({"message":"not found"})
+					return jsonify({"message":"entry not found"}), 500
 			connection.commit()
 		finally:
 			connection.close()
@@ -99,10 +99,8 @@ class Entries():
 						cursor.execute(sql_view_entries)
 						result= cursor.fetchall()
 						return jsonify(result)
-						for row in result:
-							row=cursor.fetchall()
 					except:
-						return jsonify({"message":"unable to fetch data"})
+						return jsonify({"message":"unable to fetch data"}), 500
 				connection.commit()
 			finally:
 				connection.close()  
@@ -131,7 +129,7 @@ class Entries():
 						connection.commit()
 						return jsonify({"message":"succesfully modified"})
 					except:
-						return jsonify({"message":"unable to update"})
+						return jsonify({"message":"unable to update"}), 500
 		finally:
 			connection.close()
 		return jsonify({"message":"entry does not exist"})
@@ -149,12 +147,13 @@ class Entries():
 					cursor.execute("SELECT * FROM entries WHERE entries.entry_id = "+str(entry_id)+" and entries.entry_id='"+str((entry_id))+"'")
 					result=cursor.fetchone()
 					if result is None:
-						return jsonify({"message":"entry does not exist"})
+						return jsonify({"message":"entry does not exist"}), 404
 					else:
 						cursor.execute(sql_del)
+						return jsonify({"message": "entry succesfully deleted"})
 				except:
-					return jsonify({"message": "unable to delete entry"})
+					return jsonify({"message": "unable to delete entry"}), 500
 			connection.commit()
 		finally:
 			connection.close()
-		return jsonify({"message": "entry succesfully deleted"})
+		

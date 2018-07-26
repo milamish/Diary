@@ -23,7 +23,7 @@ def tokens(k):
 
 '''this class has functions which allows users to register and login after registration, a registered user has a token generated for them'''
 class Users():
-	@users.route('/api/v2/register',methods=['POST','GET'])
+	@users.route('/api/v2/register',methods=['POST'])
 	def  register():
 		name= request.get_json()['name']
 		email_adress= request.get_json()['email_adress']
@@ -31,7 +31,7 @@ class Users():
 		password=request.get_json()['password']
 		repeat_password=request.get_json()['repeat_password']
 			
-		if password!=repeat_password:
+		if password != repeat_password:
 			return jsonify({"message":"password do not match"})
 		try:
 			connection = psycopg2.connect(host='localhost',user='postgres',password='milamish8',dbname='diary')
@@ -40,15 +40,16 @@ class Users():
 				try:
 					cursor.execute("SELECT * FROM  users WHERE username='"+username+"';");
 					if cursor.fetchone() is not None:
-						return jsonify({"message":"username taken"})
+						return jsonify({"message":"username taken"}), 409
 					else:
 						cursor.execute(sql)
+						return jsonify({"name":name,"email_adress":email_adress,"username":username})
 				except:
-					return jsonify({"message":"oops!"})
+					return jsonify({"message":"unable to register!"}), 500
 			connection.commit()
 		finally:
 			connection.close()
-		return jsonify({"message":"registered"})
+		
 
 	@users.route('/api/v2/login',methods=['POST','GET'])
 	def login():
