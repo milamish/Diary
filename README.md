@@ -6,6 +6,10 @@
 # Diary
 my diary app
 
+set up a database environment
+```
+install postgress database
+```
 install virtual environment
 ```
 py -3 -m venv venv (for windows)
@@ -17,6 +21,10 @@ venv\Scripts\activate
 install flask
 ```
 pip install flask
+```
+enable database connection
+```
+pip install psycopg2
 ```
 install blueprint
 ```
