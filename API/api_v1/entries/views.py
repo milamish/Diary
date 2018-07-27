@@ -81,7 +81,10 @@ class Entries():
 				try:
 					cursor.execute(sql_one)
 					result=cursor.fetchall()
-					return jsonify(result)
+					if len(result)==0:
+						return jsonify({"message":"no entries found"})
+					else:
+						return jsonify(result)
 				except:
 					return jsonify({"message":"entry not found"}), 500
 			connection.commit()
@@ -98,7 +101,10 @@ class Entries():
 					try:
 						cursor.execute(sql_view_entries)
 						result= cursor.fetchall()
-						return jsonify(result)
+						if len(result)==0:
+							return jsonify({"message":"you have not made any entries to view"})
+						else:
+							return jsonify(result)
 					except:
 						return jsonify({"message":"unable to fetch data"}), 500
 				connection.commit()
