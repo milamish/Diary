@@ -26,10 +26,6 @@ enable database connection
 ```
 pip install psycopg2
 ```
-install blueprint
-```
-pip install Blueprint
-```
 install requirements.txt
 ```
 pip freeze > requirements.txt
