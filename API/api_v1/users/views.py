@@ -23,7 +23,7 @@ def tokens(k):
         return k(*args, **kwargs)
     return decorators
 
-'''this class has functions which allows users to register and login after registration, a registered user has a token generated for them'''
+'''this class has functions which allows users to register and login after registration, a registered user has a token generated for them at login'''
 class Users():
 	@users.route('/api/v2/register',methods=['POST'])
 	def  register():

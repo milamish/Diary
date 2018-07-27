@@ -20,6 +20,7 @@ class Test_Diary(unittest.TestCase):
 
 	def test_register(self):
 		response=(app.test_client().get('/api/v2/register,').status_code,500)
+		respone2=(app.test_client().get('/api/v2/register,').status_code,409)
 
 
 
