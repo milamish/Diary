@@ -5,6 +5,8 @@ import jwt
 import psycopg2
 from __init__ import *
 
+from models import *
+
 entries = Blueprint('entries', __name__)
 '''args allows one to pass variable number of arguments while kwargs allows one to pass key arguments'''
 def tokens(k):
@@ -30,7 +32,17 @@ class Entries():
 		todo=request.get_json()['todo']
 		data = jwt.decode(request.args.get('token'), app.config['SECRET_KEY'])
 		user_id=data['user_id']
-		connection = psycopg2.connect(host ='localhost',user='postgres',password='milamish8',dbname='diary')
+
+		if not hobby:
+			return jsonify({"message":"enter hobby"})
+		if not milestone:
+			return jsonify({"message":"enter milestone"})
+		if not achievement:
+			return jsonify({"message":"enter achievement"})
+		if not todo:
+			return jsonify({"message":"enter todo"})
+			
+		
 		try:
 			with connection.cursor() as cursor:
 				sql_entry="INSERT INTO entries(hobby,milestone,achievement,todo,user_id) VALUES(%s,%s,%s,%s,%s);"
@@ -40,8 +52,7 @@ class Entries():
 					return jsonify({"message":"unable to add entry"}), 500
 			connection.commit()
 		finally:
-			connection.close()
-		return jsonify({"hobby":hobby,"milestone":milestone,"achievement":achievement,"todo":todo,"user_id":user_id}), 200
+			return jsonify({"hobby":hobby,"milestone":milestone,"achievement":achievement,"todo":todo,"user_id":user_id}), 200
 	
 
 	@entries.route('/api/v2/view_a_single_entry/<int:entry_id>',methods=['POST','GET'])
@@ -49,7 +60,6 @@ class Entries():
 	def view_a_single_entry(entry_id):
 		data = jwt.decode(request.args.get('token'), app.config['SECRET_KEY'])
 		user_id=data['user_id']
-		connection=psycopg2.connect(host='localhost',user='postgres',password='milamish8',dbname='diary')
 		
 		try:
 			
@@ -67,14 +77,14 @@ class Entries():
 					
 			connection.commit()
 		finally:
-			connection.close()
+			pass
 
-	@entries.route('/api/v2/entries_from_individual_user',methods=['GET'])
+	@entries.route('/api/v2/view_all_entries',methods=['GET'])
 	@tokens
-	def entries_for_single_user():
+	def view_all_entries():
 		data = jwt.decode(request.args.get('token'), app.config['SECRET_KEY'])
 		user_id=data['user_id']
-		connection=psycopg2.connect(host='localhost',user='postgres',password='milamish8',dbname='diary')
+		
 		try:
 			with connection.cursor() as cursor:
 				sql_one="SELECT * FROM entries WHERE user_id ='"+str(user_id)+"';"
@@ -89,29 +99,10 @@ class Entries():
 					return jsonify({"message":"entry not found"}), 500
 			connection.commit()
 		finally:
-			connection.close()
-
-	@entries.route('/api/v2/view_all_entries',methods=['POST','GET'])
-	@tokens
-	def view_all_entries():
-			connection=psycopg2.connect(host='localhost',user='postgres',password='milamish8',dbname='diary')
-			try:
-				with connection.cursor() as cursor:
-					sql_view_entries="SELECT * FROM entries";
-					try:
-						cursor.execute(sql_view_entries)
-						result= cursor.fetchall()
-						if len(result)==0:
-							return jsonify({"message":"you have not made any entries to view"})
-						else:
-							return jsonify(result)
-					except:
-						return jsonify({"message":"unable to fetch data"}), 500
-				connection.commit()
-			finally:
-				connection.close()  
+			pass
 
 
+	
 	@entries.route('/api/v2/modify_an_entry/<int:entry_id>',methods=['PUT','POST'])
 	@tokens
 	def modify_an_entry(entry_id):
@@ -122,8 +113,7 @@ class Entries():
 		achievement=request.get_json()['achievement']
 		todo=request.get_json()['todo']
 		get_date=str(datetime.datetime.today())
-		connection=psycopg2.connect(host='localhost',user='postgres',password='milamish8',dbname='diary')
-
+		
 		try:
 			with connection.cursor() as cursor:
 				cursor.execute("SELECT * FROM entries WHERE entries.entry_id='"+str(entry_id)+"' and entries.user_id='"+str(user_id)+"'")
@@ -136,21 +126,20 @@ class Entries():
 						return jsonify({"message":"succesfully modified"})
 					except:
 						return jsonify({"message":"unable to update"}), 500
-		finally:
-			connection.close()
-		return jsonify({"message":"entry does not exist"})
+		except:
+			return jsonify({"message":"entry does not exist"})
 
 	@entries.route('/api/v2/delete_entry/<int:entry_id>',methods=['DELETE'])
 	@tokens
 	def delete_entry(entry_id):
 		data = jwt.decode(request.args.get('token'), app.config['SECRET_KEY'])
 		user_id=data['user_id']
-		connection=psycopg2.connect(host='localhost',user='postgres',password='milamish8',dbname='diary')
+		
 		try:
 			with connection.cursor() as cursor:
-				sql_del="DELETE FROM entries WHERE entries.entry_id= "+str(entry_id)+" and entries.entry_id='"+str((entry_id))+"';"
+				sql_del="DELETE FROM entries WHERE entries.entry_id= '"+str(entry_id)+"' and entries.user_id='"+str((user_id))+"';"
 				try:
-					cursor.execute("SELECT * FROM entries WHERE entries.entry_id = "+str(entry_id)+" and entries.entry_id='"+str((entry_id))+"'")
+					cursor.execute("SELECT * FROM entries WHERE entries.entry_id = '"+str(entry_id)+"' and entries.user_id='"+str((user_id))+"'")
 					result=cursor.fetchone()
 					if result is None:
 						return jsonify({"message":"entry does not exist"}), 404
@@ -161,6 +150,5 @@ class Entries():
 					return jsonify({"message": "unable to delete entry"}), 500
 			connection.commit()
 		finally:
-			connection.close()
-		return jsonify({"message": "entry succesfully deleted"})
+			return jsonify({"message": "entry succesfully deleted"})
 		
