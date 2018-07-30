@@ -12,7 +12,7 @@ entries = Blueprint('entries', __name__)
 def tokens(k):
     @wraps(k)
     def decorators(*args, **kwargs):
-        token = request.args.get('token')
+        token = request.headers.get('x-access-token')
         if not token:
             return jsonify({'message' : 'Token is required for access'})
         try:
@@ -30,7 +30,7 @@ class Entries():
 		milestone=request.get_json()['milestone']
 		achievement=request.get_json()['achievement']
 		todo=request.get_json()['todo']
-		data = jwt.decode(request.args.get('token'), app.config['SECRET_KEY'])
+		data = jwt.decode(request.headers.get('x-access-token'), app.config['SECRET_KEY'])
 		user_id=data['user_id']
 
 		if not hobby:
@@ -58,7 +58,7 @@ class Entries():
 	@entries.route('/api/v2/view_a_single_entry/<int:entry_id>',methods=['POST','GET'])
 	@tokens
 	def view_a_single_entry(entry_id):
-		data = jwt.decode(request.args.get('token'), app.config['SECRET_KEY'])
+		data = jwt.decode(request.headers.get('x-access-token'), app.config['SECRET_KEY'])
 		user_id=data['user_id']
 		
 		try:
@@ -82,7 +82,7 @@ class Entries():
 	@entries.route('/api/v2/view_all_entries',methods=['GET'])
 	@tokens
 	def view_all_entries():
-		data = jwt.decode(request.args.get('token'), app.config['SECRET_KEY'])
+		data = jwt.decode(request.headers.get('x-access-token'), app.config['SECRET_KEY'])
 		user_id=data['user_id']
 		
 		try:
@@ -106,7 +106,7 @@ class Entries():
 	@entries.route('/api/v2/modify_an_entry/<int:entry_id>',methods=['PUT','POST'])
 	@tokens
 	def modify_an_entry(entry_id):
-		data = jwt.decode(request.args.get('token'), app.config['SECRET_KEY'])
+		data = jwt.decode(request.headers.get('x-token-access'), app.config['SECRET_KEY'])
 		user_id=data['user_id']
 		hobby=request.get_json()['hobby']
 		milestone=request.get_json()['milestone']
@@ -132,7 +132,7 @@ class Entries():
 	@entries.route('/api/v2/delete_entry/<int:entry_id>',methods=['DELETE'])
 	@tokens
 	def delete_entry(entry_id):
-		data = jwt.decode(request.args.get('token'), app.config['SECRET_KEY'])
+		data = jwt.decode(request.headers.get('x-access-token'), app.config['SECRET_KEY'])
 		user_id=data['user_id']
 		
 		try:
