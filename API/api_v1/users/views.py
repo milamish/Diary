@@ -86,7 +86,7 @@ class Users():
 		return jsonify({"name":name,"email_adress":email_adress,"username":username})
 		
 
-	@users.route('/api/v2/login',methods=['POST','GET'])
+	@users.route('/api/v2/login',methods=['POST'])
 	def login():
 		username=request.get_json()['username'].strip()
 		password= request.get_json()['password'].strip()
