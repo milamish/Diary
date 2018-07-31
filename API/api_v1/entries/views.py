@@ -26,10 +26,10 @@ class Entries():
 	@entries.route('/api/v2/add_entry',methods=['POST','GET'])
 	@tokens
 	def add_entry():
-		hobby= request.get_json()['hobby']
-		milestone=request.get_json()['milestone']
-		achievement=request.get_json()['achievement']
-		todo=request.get_json()['todo']
+		hobby= request.get_json()['hobby'].strip()
+		milestone=request.get_json()['milestone'].strip()
+		achievement=request.get_json()['achievement'].strip()
+		todo=request.get_json()['todo'].strip()
 		data = jwt.decode(request.headers.get('x-access-token'), app.config['SECRET_KEY'])
 		user_id=data['user_id']
 
@@ -108,10 +108,10 @@ class Entries():
 	def modify_an_entry(entry_id):
 		data = jwt.decode(request.headers.get('x-token-access'), app.config['SECRET_KEY'])
 		user_id=data['user_id']
-		hobby=request.get_json()['hobby']
-		milestone=request.get_json()['milestone']
-		achievement=request.get_json()['achievement']
-		todo=request.get_json()['todo']
+		hobby=request.get_json()['hobby'].strip()
+		milestone=request.get_json()['milestone'].strip()
+		achievement=request.get_json()['achievement'].strip()
+		todo=request.get_json()['todo'].strip()
 		get_date=str(datetime.datetime.today())
 		
 		try:

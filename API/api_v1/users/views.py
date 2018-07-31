@@ -40,11 +40,11 @@ def check_pwhash(password, hash):
 class Users():
 	@users.route('/api/v2/register',methods=['POST'])
 	def  register():
-		name= request.get_json()['name']
-		email_adress= request.get_json()['email_adress']
-		username=request.get_json()['username']
-		password=request.get_json()['password']
-		repeat_password=request.get_json()['repeat_password']
+		name= request.get_json()['name'].strip()
+		email_adress= request.get_json()['email_adress'].strip()
+		username=request.get_json()['username'].strip()
+		password=request.get_json()['password'].strip()
+		repeat_password=request.get_json()['repeat_password'].strip()
 		phash=pwhash(password)
 
 		if not name:
@@ -88,8 +88,8 @@ class Users():
 
 	@users.route('/api/v2/login',methods=['POST','GET'])
 	def login():
-		username=request.get_json()['username']
-		password= request.get_json()['password']
+		username=request.get_json()['username'].strip()
+		password= request.get_json()['password'].strip()
 		
 		if not username:
 			return jsonify({"message":"please enter a username"})
