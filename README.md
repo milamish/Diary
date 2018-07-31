@@ -10,6 +10,9 @@ set up a database environment
 ```
 install postgress database
 ```
+```
+name the database diary and use milamish8 as password
+```
 install virtual environment
 ```
 py -3 -m venv venv (for windows)
