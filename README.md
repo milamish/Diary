@@ -30,7 +30,7 @@ install requirements.txt
 ```
 pip freeze > requirements.txt
 ```
-run the code
+run the code from the run.py file
 
 open postman to test on the functionality of the endpoints
 ```
