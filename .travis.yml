@@ -6,8 +6,7 @@ python:
 install:
   - pip install -r requirements.txt
 script:
-  #- pytest
-  - python test_diary3.py
+  - pytest
 
 after_success:
   - coveralls
