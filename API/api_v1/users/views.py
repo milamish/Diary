@@ -66,15 +66,15 @@ class Users():
 		if not re.match('\d.*[A-Z]|[A-Z].*\d', password):
 			return jsonify({"message":"password must contain a capital letter and a number"})
 
-		if not email_adress:
+		if not email_address:
 			return jsonify({"message":"you must provide an email"})
 
 		if not re.match("[^@]+@[^@]+\.[^@]+", email_address):
 			return jsonify({"message":"email address not valid"})
 		try:
 			with connection.cursor() as cursor:
-				sql="INSERT INTO users(name,email_address,password,username,repeat_password) VALUES\
-				('"+name+"','"+email_address+"','"+str(phash)+"','"+username+"','"+str(phash)+"');"
+				sql="INSERT INTO users(name,email_address,password,username) VALUES\
+				('"+name+"','"+email_address+"','"+str(phash)+"','"+username+"');"
 				cursor.execute("SELECT * FROM  users WHERE username='"+username+"';");
 				if cursor.fetchone() is not None:
 					return jsonify({"message":"username taken"}), 409
