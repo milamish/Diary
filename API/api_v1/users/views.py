@@ -38,7 +38,7 @@ def check_pwhash(password, hash):
 
 '''this class has functions which allows users to register and login after registration, a registered user has a token generated for them at login'''
 class Users():
-	@users.route('/api/v2/auth/signUp',methods=['POST'])
+	@users.route('/api/v2/auth/signup',methods=['POST'])
 	def  register():
 		name= request.get_json()['name'].strip()
 		email_adress= request.get_json()['email_adress'].strip()

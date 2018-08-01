@@ -2,6 +2,7 @@ from flask import Flask, request, Blueprint, jsonify
 from functools import wraps
 import datetime
 import jwt
+import pdb
 import psycopg2
 from __init__ import *
 
@@ -23,7 +24,7 @@ def tokens(k):
     return decorators
 '''this class has functions which allows a user to make enties i.e, add, delete , modify and view'''
 class Entries():
-	@entries.route('/api/v2/entries',methods=['POST','GET'])
+	@entries.route('/api/v2/entries',methods=['POST'])
 	@tokens
 	def add_entry():
 		title= request.get_json()['title'].strip()
@@ -80,14 +81,14 @@ class Entries():
 		
 		try:
 			with connection.cursor() as cursor:
-				sql_one="SELECT * FROM entries WHERE user_id ='"+str(user_id)+"';"
+				sql_one="SELECT * FROM entries WHERE user_id = '"+str(user_id)+"';"
 				try:
 					cursor.execute(sql_one)
 					result=cursor.fetchall()
 					if len(result)==0:
 						return jsonify({"message":"no entries found"})
 					else:
-						return jsonify(result)
+						return jsonify ({"results":result})
 				except:
 					return jsonify({"message":"entry not found"}), 500
 			connection.commit()
