@@ -31,7 +31,7 @@ pip install psycopg2
 ```
 install requirements.txt
 ```
-pip freeze > requirements.txt
+pip install -r requirements.txt
 ```
 run the code from the run.py file
 
