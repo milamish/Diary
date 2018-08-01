@@ -37,15 +37,14 @@ run the code from the run.py file
 
 open postman to test on the functionality of the endpoints
 ```
-home '/api/v2/home'
-registration '/api/v2/register'
-login '/api/v2/login'
-post entry '/api/v2/add_entry'
-fetch entry for a single user '/api/v2/entries_from_individual_user'
-fetch all entries '/api/v2/view_all_entries'
-update entry '/api/v2/modify_an_entry/<int:entry_id>'
-delete entry '/api/v2/delete_entry/<int:entry_id>'
-view a single entry '/view_a_single_entry/<int:entry_id'
+home '/api/v2/'
+registration '/api/v2/auth/signup'
+login '/api/v2/auth/login'
+post entry '/api/v2/entries'
+fetch all entries '/api/v2/entries'
+update entry '/api/v2/entries/<int:entry_id>'
+delete entry '/api/v2/entries/<int:entry_id>'
+view a single entry '/entry/<int:entry_id'
 logout '/api/v2/logout'
 ```
 
