@@ -38,10 +38,10 @@ def check_pwhash(password, hash):
 
 '''this class has functions which allows users to register and login after registration, a registered user has a token generated for them at login'''
 class Users():
-	@users.route('/api/v2/auth/signUp',methods=['POST'])
+	@users.route('/api/v2/auth/signup',methods=['POST'])
 	def  register():
 		name= request.get_json()['name'].strip()
-		email_adress= request.get_json()['email_adress'].strip()
+		email_address= request.get_json()['email_address'].strip()
 		username=request.get_json()['username'].strip()
 		password=request.get_json()['password'].strip()
 		repeat_password=request.get_json()['repeat_password'].strip()
@@ -69,12 +69,12 @@ class Users():
 		if not email_adress:
 			return jsonify({"message":"you must provide an email"})
 
-		if not re.match("[^@]+@[^@]+\.[^@]+", email_adress):
-			return jsonify({"message":"email adress not valid"})
+		if not re.match("[^@]+@[^@]+\.[^@]+", email_address):
+			return jsonify({"message":"email address not valid"})
 		try:
 			with connection.cursor() as cursor:
-				sql="INSERT INTO users(name,email_adress,password,username,repeat_password) VALUES\
-				('"+name+"','"+email_adress+"','"+str(phash)+"','"+username+"','"+str(phash)+"');"
+				sql="INSERT INTO users(name,email_address,password,username,repeat_password) VALUES\
+				('"+name+"','"+email_address+"','"+str(phash)+"','"+username+"','"+str(phash)+"');"
 				cursor.execute("SELECT * FROM  users WHERE username='"+username+"';");
 				if cursor.fetchone() is not None:
 					return jsonify({"message":"username taken"}), 409
@@ -83,7 +83,7 @@ class Users():
 		except:
 			return jsonify({"message":"unable to register!"}), 500
 		connection.commit()
-		return jsonify({"name":name, "email_adress":email_adress, "username":username})
+		return jsonify({"name":name, "email_adress":email_address, "username":username})
 		
 
 	@users.route('/api/v2/auth/login',methods=['POST'])

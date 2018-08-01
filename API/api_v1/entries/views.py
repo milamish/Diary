@@ -23,7 +23,7 @@ def tokens(k):
     return decorators
 '''this class has functions which allows a user to make enties i.e, add, delete , modify and view'''
 class Entries():
-	@entries.route('/api/v2/entries',methods=['POST','GET'])
+	@entries.route('/api/v2/entries',methods=['POST'])
 	@tokens
 	def add_entry():
 		title= request.get_json()['title'].strip()
@@ -48,7 +48,7 @@ class Entries():
 			return jsonify({"title":title,"entry_comment":entry_comment,"user_id":user_id}), 200
 	
 
-	@entries.route('/api/v2/entry/<int:entry_id>',methods=['POST','GET'])
+	@entries.route('/api/v2/entries/<int:entry_id>',methods=['POST','GET'])
 	@tokens
 	def view_a_single_entry(entry_id):
 		data = jwt.decode(request.headers.get('x-access-token'), app.config['SECRET_KEY'])
@@ -64,7 +64,7 @@ class Entries():
 					if result is None:
 						return jsonify({"message":"entry_id does not exist"}), 404
 					else:
-						return jsonify(result)
+						return jsonify({"result":result})
 				except:
 					return jsonify({"message": "unable to fetch entry"}), 500
 					
