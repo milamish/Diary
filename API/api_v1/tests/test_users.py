@@ -12,15 +12,15 @@ class Test_Diary(unittest.TestCase):
 		self.app = app.test_client()
 
 	def test_Home(self):
-		self.assertEqual(app.test_client().get('/api/v2/home',).status_code,200)
+		self.assertEqual(app.test_client().get('/api/v2/',).status_code,200)
 
 	def test_login(self):
 		m=app.test_client()
-		response=(m.get('/api/v2/login',).status_code, 500)
+		response=(m.get('/api/v2/auth/login',).status_code, 500)
 
 	def test_register(self):
-		response=(app.test_client().get('/api/v2/register,').status_code,500)
-		respone2=(app.test_client().get('/api/v2/register,').status_code,409)
+		response=(app.test_client().get('/api/v2/auth/signUp,').status_code,500)
+		respone2=(app.test_client().get('/api/v2/auth/signUp,').status_code,409)
 
 
 

@@ -23,39 +23,32 @@ def tokens(k):
     return decorators
 '''this class has functions which allows a user to make enties i.e, add, delete , modify and view'''
 class Entries():
-	@entries.route('/api/v2/add_entry',methods=['POST','GET'])
+	@entries.route('/api/v2/entries',methods=['POST','GET'])
 	@tokens
 	def add_entry():
-		hobby= request.get_json()['hobby'].strip()
-		milestone=request.get_json()['milestone'].strip()
-		achievement=request.get_json()['achievement'].strip()
-		todo=request.get_json()['todo'].strip()
+		title= request.get_json()['title'].strip()
+		entry_comment=request.get_json()['entry_comment'].strip()
 		data = jwt.decode(request.headers.get('x-access-token'), app.config['SECRET_KEY'])
 		user_id=data['user_id']
 
-		if not hobby:
-			return jsonify({"message":"enter hobby"})
-		if not milestone:
-			return jsonify({"message":"enter milestone"})
-		if not achievement:
-			return jsonify({"message":"enter achievement"})
-		if not todo:
-			return jsonify({"message":"enter todo"})
-			
-		
+		if not title:
+			return jsonify({"message":"enter title"})
+		if not entry_comment:
+			return jsonify({"message":"enter entry comment"})
+				
 		try:
 			with connection.cursor() as cursor:
-				sql_entry="INSERT INTO entries(hobby,milestone,achievement,todo,user_id) VALUES(%s,%s,%s,%s,%s);"
+				sql_entry="INSERT INTO entries(title,entry_comment,user_id) VALUES(%s,%s,%s);"
 				try:
-					cursor.execute(sql_entry,(hobby,milestone,achievement,todo,user_id))
+					cursor.execute(sql_entry,(title,entry_comment,user_id))
 				except:
 					return jsonify({"message":"unable to add entry"}), 500
 			connection.commit()
 		finally:
-			return jsonify({"hobby":hobby,"milestone":milestone,"achievement":achievement,"todo":todo,"user_id":user_id}), 200
+			return jsonify({"title":title,"entry_comment":entry_comment,"user_id":user_id}), 200
 	
 
-	@entries.route('/api/v2/view_a_single_entry/<int:entry_id>',methods=['POST','GET'])
+	@entries.route('/api/v2/entry/<int:entry_id>',methods=['POST','GET'])
 	@tokens
 	def view_a_single_entry(entry_id):
 		data = jwt.decode(request.headers.get('x-access-token'), app.config['SECRET_KEY'])
@@ -79,7 +72,7 @@ class Entries():
 		finally:
 			pass
 
-	@entries.route('/api/v2/view_all_entries',methods=['GET'])
+	@entries.route('/api/v2/entries',methods=['GET'])
 	@tokens
 	def view_all_entries():
 		data = jwt.decode(request.headers.get('x-access-token'), app.config['SECRET_KEY'])
@@ -103,15 +96,13 @@ class Entries():
 
 
 	
-	@entries.route('/api/v2/modify_an_entry/<int:entry_id>',methods=['PUT','POST'])
+	@entries.route('/api/v2/entries/<int:entry_id>',methods=['PUT','POST'])
 	@tokens
 	def modify_an_entry(entry_id):
-		data = jwt.decode(request.headers.get('x-token-access'), app.config['SECRET_KEY'])
+		data = jwt.decode(request.headers.get('x-access-token'), app.config['SECRET_KEY'])
 		user_id=data['user_id']
-		hobby=request.get_json()['hobby'].strip()
-		milestone=request.get_json()['milestone'].strip()
-		achievement=request.get_json()['achievement'].strip()
-		todo=request.get_json()['todo'].strip()
+		title=request.get_json()['title'].strip()
+		entry_comment=request.get_json()['entry_comment'].strip()
 		get_date=str(datetime.datetime.today())
 		
 		try:
@@ -119,7 +110,7 @@ class Entries():
 				cursor.execute("SELECT * FROM entries WHERE entries.entry_id='"+str(entry_id)+"' and entries.user_id='"+str(user_id)+"'")
 				result=cursor.fetchone()
 				if result is not None:
-					sql_update="update entries SET hobby='"+hobby+"',milestone='"+milestone+"',achievement = '"+achievement+"',todo = '"+todo+"' where entry_id='"+str(entry_id)+"';"
+					sql_update="update entries SET title='"+title+"',entry_comment='"+entry_comment+"' where entry_id='"+str(entry_id)+"';"
 					try:
 						cursor.execute(sql_update)
 						connection.commit()
@@ -129,7 +120,7 @@ class Entries():
 		except:
 			return jsonify({"message":"entry does not exist"})
 
-	@entries.route('/api/v2/delete_entry/<int:entry_id>',methods=['DELETE'])
+	@entries.route('/api/v2/entries/<int:entry_id>',methods=['DELETE'])
 	@tokens
 	def delete_entry(entry_id):
 		data = jwt.decode(request.headers.get('x-access-token'), app.config['SECRET_KEY'])

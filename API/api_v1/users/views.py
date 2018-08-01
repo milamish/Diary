@@ -38,7 +38,7 @@ def check_pwhash(password, hash):
 
 '''this class has functions which allows users to register and login after registration, a registered user has a token generated for them at login'''
 class Users():
-	@users.route('/api/v2/register',methods=['POST'])
+	@users.route('/api/v2/auth/signUp',methods=['POST'])
 	def  register():
 		name= request.get_json()['name'].strip()
 		email_adress= request.get_json()['email_adress'].strip()
@@ -83,10 +83,10 @@ class Users():
 		except:
 			return jsonify({"message":"unable to register!"}), 500
 		connection.commit()
-		return jsonify({"name":name,"email_adress":email_adress,"username":username})
+		return jsonify({"name":name, "email_adress":email_adress, "username":username})
 		
 
-	@users.route('/api/v2/login',methods=['POST'])
+	@users.route('/api/v2/auth/login',methods=['POST'])
 	def login():
 		username=request.get_json()['username'].strip()
 		password= request.get_json()['password'].strip()

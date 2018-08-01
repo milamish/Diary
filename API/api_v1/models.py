@@ -13,10 +13,8 @@ def table():
 			repeat_password VARCHAR(100) NOT NULL,\
 			reg_date timestamp DEFAULT CURRENT_TIMESTAMP);")
 		cursor.execute("CREATE TABLE IF NOT EXISTS entries(entry_id serial PRIMARY KEY, \
-			hobby VARCHAR(100) NOT NULL, \
-			milestone VARCHAR(100) NOT NULL,\
-			achievement VARCHAR(100) NOT NULL,\
-			todo VARCHAR(100) NOT NULL,\
+			title VARCHAR(100) NOT NULL, \
+			entry_comment VARCHAR(100) NOT NULL,\
 			entry_date timestamp DEFAULT CURRENT_TIMESTAMP,\
 			user_id INT);")
 
