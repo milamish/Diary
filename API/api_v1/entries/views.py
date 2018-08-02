@@ -62,9 +62,14 @@ class Entries():
 					cursor.execute(sql_view)
 					result=cursor.fetchone()
 					if result is None:
+						
 						return jsonify({"message":"entry_id does not exist"}), 404
 					else:
-						return jsonify({"result":result})
+						user_id=result[4]
+						title=result[1]
+						entry_comment= result[2]
+						entry_id=result[0]
+						return jsonify({"user_id":user_id, "title":title, "entry_comment":entry_comment, "entry_id":entry_id})
 				except:
 					return jsonify({"message": "unable to fetch entry"}), 500
 					
