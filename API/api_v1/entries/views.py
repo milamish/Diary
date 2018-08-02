@@ -89,10 +89,18 @@ class Entries():
 				try:
 					cursor.execute(sql_one)
 					result=cursor.fetchall()
+					entries={}
 					if len(result)==0:
 						return jsonify({"message":"no entries found"})
 					else:
-						return jsonify(result)
+						for row in result:
+							entry_id=row[0]
+							title=row[1]
+							entry_comment=row[2]
+							entry_date=row[3]
+							entries.update({entry_id:{"title":title, "entry_comment":entry_comment, "entry_date":entry_date}})
+
+						return jsonify(entries)
 				except:
 					return jsonify({"message":"entry not found"}), 500
 			connection.commit()
@@ -119,11 +127,12 @@ class Entries():
 					try:
 						cursor.execute(sql_update)
 						connection.commit()
-						return jsonify({"message":"succesfully modified"})
+						return jsonify({"entry_id":entry_id, "title":title, "entry_comment":entry_comment})
 					except:
 						return jsonify({"message":"unable to update"}), 500
 		except:
 			return jsonify({"message":"entry does not exist"})
+
 
 	@entries.route('/api/v2/entries/<int:entry_id>',methods=['DELETE'])
 	@tokens
