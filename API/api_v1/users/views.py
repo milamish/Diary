@@ -112,11 +112,4 @@ class Users():
 		return jsonify({"message":"check your login details"})
 
 
-@users.route('/api/v2/logout',methods=['POST','GET'])
-def logout():
-	
-	with connection.cursor() as cursor:
-		sql_log="SELECT * FROM  users WHERE Username LIKE '"+username+"' and Password LIKE '"+password+"'"
-		cursor.execute(sql_log)
-		result = cursor.fetchone()
-		return jsonify({"message":"you have been logged out"})
+
