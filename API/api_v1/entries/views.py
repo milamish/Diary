@@ -39,13 +39,15 @@ class Entries():
 		try:
 			with connection.cursor() as cursor:
 				sql_entry="INSERT INTO entries(title,entry_comment,user_id) VALUES(%s,%s,%s);"
-				try:
+				cursor.execute("SELECT * FROM  entries WHERE title='"+title+"';");
+				if cursor.fetchone() is not None:
+					return jsonify({"message":"title exists"}), 409
+				else:
 					cursor.execute(sql_entry,(title,entry_comment,user_id))
-				except:
-					return jsonify({"message":"unable to add entry"}), 500
-			connection.commit()
-		finally:
-			return jsonify({"title":title,"entry_comment":entry_comment,"user_id":user_id}), 200
+		except:
+			return jsonify({"message":"unable to add entry"}), 500
+		connection.commit()
+		return jsonify({"title":title,"entry_comment":entry_comment,"user_id":user_id}), 200
 	
 
 	@entries.route('/api/v2/entries/<int:entry_id>',methods=['POST','GET'])
@@ -57,7 +59,7 @@ class Entries():
 		try:
 			
 			with connection.cursor() as cursor:
-				sql_view="SELECT * FROM entries WHERE entries.entry_id ="+str(entry_id)+";"
+				sql_view="SELECT * FROM entries WHERE entries.entry_id ='"+str(entry_id)+"' and entries.user_id='"+str(user_id)+"';"
 				try:
 					cursor.execute(sql_view)
 					result=cursor.fetchone()
@@ -98,7 +100,7 @@ class Entries():
 							title=row[1]
 							entry_comment=row[2]
 							entry_date=row[3]
-							entries.update({entry_id:{"title":title, "entry_comment":entry_comment, "entry_date":entry_date}})
+							entries.update({title:{"entry_id":entry_id, "entry_comment":entry_comment, "entry_date":entry_date}})
 
 						return jsonify(entries)
 				except:
@@ -124,14 +126,16 @@ class Entries():
 				result=cursor.fetchone()
 				if result is not None:
 					sql_update="update entries SET title='"+title+"',entry_comment='"+entry_comment+"' where entry_id='"+str(entry_id)+"';"
-					try:
-						cursor.execute(sql_update)
-						connection.commit()
-						return jsonify({"entry_id":entry_id, "title":title, "entry_comment":entry_comment})
-					except:
-						return jsonify({"message":"unable to update"}), 500
+					cursor.execute(sql_update)
+				else:
+					return jsonify({"message":"entry does not exist"})
+					
+					
+						
 		except:
-			return jsonify({"message":"entry does not exist"})
+			return jsonify({"message":"unable to update"}), 500
+		connection.commit()
+		return jsonify({"entry_id":entry_id, "title":title, "entry_comment":entry_comment})
 
 
 	@entries.route('/api/v2/entries/<int:entry_id>',methods=['DELETE'])
@@ -143,17 +147,14 @@ class Entries():
 		try:
 			with connection.cursor() as cursor:
 				sql_del="DELETE FROM entries WHERE entries.entry_id= '"+str(entry_id)+"' and entries.user_id='"+str((user_id))+"';"
-				try:
-					cursor.execute("SELECT * FROM entries WHERE entries.entry_id = '"+str(entry_id)+"' and entries.user_id='"+str((user_id))+"'")
-					result=cursor.fetchone()
-					if result is None:
-						return jsonify({"message":"entry does not exist"}), 404
-					else:
-						cursor.execute(sql_del)
-						
-				except:
-					return jsonify({"message": "unable to delete entry"}), 500
-			connection.commit()
-		finally:
-			return jsonify({"message": "entry succesfully deleted"})
+				cursor.execute("SELECT * FROM entries WHERE entries.entry_id = '"+str(entry_id)+"' and entries.user_id='"+str((user_id))+"'")
+				result=cursor.fetchone()
+				if result is None:
+					return jsonify({"message":"entry does not exist"}), 404
+				else:
+					cursor.execute(sql_del)
+		except:
+			return jsonify({"message": "unable to delete entry"}), 500
+		connection.commit()
+		return jsonify({"message": "entry succesfully deleted"})
 		

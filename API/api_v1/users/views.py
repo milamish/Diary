@@ -78,6 +78,9 @@ class Users():
 				cursor.execute("SELECT * FROM  users WHERE username='"+username+"';");
 				if cursor.fetchone() is not None:
 					return jsonify({"message":"username taken"}), 409
+				cursor.execute("SELECT * FROM  users WHERE email_address='"+email_address+"';");
+				if cursor.fetchone() is not None:
+					return jsonify({"message":"email_address exists"})
 				else:
 					cursor.execute(sql)
 		except:

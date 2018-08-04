@@ -28,7 +28,7 @@ class Test_Diary3(unittest.TestCase):
 
 	def test_delete_entry(self):
 		m= app.test_client()
-		response=(m.get('/api/v2/entries',).status_code,403)
+		response=(m.delete('/api/v2/entries',).status_code,403)
 
 	def test_view_entries(self):
 		m=app.test_client()
