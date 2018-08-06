@@ -58,7 +58,7 @@ update entry '/api/v2/entries/<int:entry_id>'
 delete entry '/api/v2/entries/<int:entry_id>'
 ```
 ```
-view a single entry '/entry/<int:entry_id'
+view a single entry '/entry/<int:entry_id>'
 ```
 copy the url then post it on postman
 
